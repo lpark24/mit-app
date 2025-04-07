@@ -36,11 +36,11 @@ const MITTherapy = () => {
 // 🎤 Sing with vibration
 const singWithVibration = async () => {
   const syllables = [
-    { text: "What's", pitch: 1.4, duration: 600 },
-    { text: "for", pitch: 0.9, duration: 600 },
-    { text: "din", pitch: 1.4, duration: 600 },
-    { text: "ner", pitch: 0.9, duration: 600 }
-  ];
+    { text: "What's", pitch: 1.8, duration: 700, rate: 0.7 },
+    { text: "for", pitch: 0.6, duration: 700, rate: 0.7 },
+    { text: "din", pitch: 1.8, duration: 700, rate: 0.7 },
+    { text: "ner", pitch: 0.6, duration: 700, rate: 0.7 },
+  ];  
 
   let totalTime = 0;
 
@@ -48,7 +48,7 @@ const singWithVibration = async () => {
     setTimeout(() => {
       const utterance = new SpeechSynthesisUtterance(syllable.text);
       utterance.pitch = syllable.pitch;
-      utterance.rate = 0.5;
+      utterance.rate = syllable.rate;
       utterance.lang = "en-US";
 
       window.speechSynthesis.speak(utterance);
