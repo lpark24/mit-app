@@ -10,11 +10,11 @@ const melodyNotes = [
 
 
 const MITTherapy = () => {
-  const [currentNoteIndex, setCurrentNoteIndex] = useState(-1);
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [background, setBackground] = useState("white");
   const [permissionGranted, setPermissionGranted] = useState(false);
+  const [currentNoteIndex, setCurrentNoteIndex] = useState(-1);
   const [errorMessage, setErrorMessage] = useState("");
 
   // 🎵 Play melody and vibrate
