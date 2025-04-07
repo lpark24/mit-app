@@ -35,22 +35,36 @@ const MITTherapy = () => {
   };
 // 🎤 Sing with vibration
 const singWithVibration = async () => {
-  const synth = new Tone.Synth().toDestination();
-  await Tone.start();
+  const syllables = [
+    { text: "What's", pitch: 1.4, duration: 600 },
+    { text: "for", pitch: 0.9, duration: 600 },
+    { text: "din", pitch: 1.4, duration: 600 },
+    { text: "ner", pitch: 0.9, duration: 600 }
+  ];
 
-  melodyNotes.forEach((item, i) => {
+  let totalTime = 0;
+
+  syllables.forEach((syllable, i) => {
     setTimeout(() => {
-      setCurrentNoteIndex(i); // 🔥 trigger visual highlight
-      synth.triggerAttackRelease(item.note, "8n");
-      if (navigator.vibrate) {
-        navigator.vibrate(item.duration);
-      }
-    }, i * 600);
+      const utterance = new SpeechSynthesisUtterance(syllable.text);
+      utterance.pitch = syllable.pitch;
+      utterance.rate = 0.9;
+      utterance.lang = "en-US";
+
+      window.speechSynthesis.speak(utterance);
+      setCurrentNoteIndex(i);
+
+      if (navigator.vibrate) navigator.vibrate(200);
+    }, totalTime);
+
+    totalTime += syllable.duration;
   });
 
-  // Reset the highlight after the melody finishes
-  setTimeout(() => setCurrentNoteIndex(-1), melodyNotes.length * 600);
+  // Reset highlight
+  setTimeout(() => setCurrentNoteIndex(-1), totalTime);
 };
+
+  
   // 🎤 Request microphone permission
   const requestMicrophoneAccess = async () => {
     try {
