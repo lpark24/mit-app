@@ -115,7 +115,19 @@ const MITTherapy = () => {
       {/* Syllables under notes */}
       <div style={{ display: "flex", justifyContent: "center", gap: "15px", marginBottom: "20px" }}>
         {melodyNotes.map((item, i) => (
-          <span key={i} style={{ width: 50, textAlign: "center" }}>{item.syllable}</span>
+          <span
+          key={i}
+          style={{
+            width: 50,
+            textAlign: "center",
+            fontWeight: i === currentNoteIndex ? "bold" : "normal",
+            fontSize: i === currentNoteIndex ? "16px" : "14px",
+            color: i === currentNoteIndex ? "#222" : "#555",
+            transition: "all 0.3s ease"
+          }}
+        >
+          {item.syllable}
+        </span>
         ))}
       </div>
 
