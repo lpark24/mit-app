@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import * as Tone from "tone";
 
 const melodyNotes = [
-  { note: "G4", color: "#FF6B6B", syllable: "What’s" }, // High
-  { note: "C4", color: "#FFD93D", syllable: "for" },    // Low
-  { note: "G4", color: "#FF6B6B", syllable: "din-" },   // High
-  { note: "C4", color: "#FFD93D", syllable: "ner?" },   // Low
+  { note: "G4", label: "High", color: "#FF6B6B", syllable: "What’s", duration: 400 },
+  { note: "C4", label: "Low",  color: "#FFD93D", syllable: "for",    duration: 200 },
+  { note: "G4", label: "High", color: "#FF6B6B", syllable: "din-",   duration: 400 },
+  { note: "C4", label: "Low",  color: "#FFD93D", syllable: "ner?",   duration: 200 },
 ];
 
+
 const MITTherapy = () => {
+  const [currentNoteIndex, setCurrentNoteIndex] = useState(-1);
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [background, setBackground] = useState("white");
@@ -19,13 +21,17 @@ const MITTherapy = () => {
   const playMelody = async () => {
     const synth = new Tone.Synth().toDestination();
     await Tone.start();
-
+  
     melodyNotes.forEach((item, i) => {
       setTimeout(() => {
+        setCurrentNoteIndex(i); // 🎯 trigger animation
         synth.triggerAttackRelease(item.note, "8n");
-        if (navigator.vibrate) navigator.vibrate(200);
+        if (navigator.vibrate) navigator.vibrate(item.duration);
       }, i * 600);
     });
+  
+    // Reset after last note
+    setTimeout(() => setCurrentNoteIndex(-1), melodyNotes.length * 600);
   };
 
   // 🎤 Request microphone permission
@@ -84,7 +90,9 @@ const MITTherapy = () => {
       {/* Visual Melody */}
       <div style={{ display: "flex", justifyContent: "center", gap: "15px", margin: "20px 0" }}>
         {melodyNotes.map((item, i) => (
-          <div key={i} style={{
+          <div
+          key={i}
+          style={{
             width: 50,
             height: 50,
             borderRadius: "50%",
@@ -93,9 +101,13 @@ const MITTherapy = () => {
             alignItems: "center",
             justifyContent: "center",
             fontWeight: "bold",
-            fontSize: "14px"
-          }}>
-            {item.note}
+            fontSize: "14px",
+            transform: i === currentNoteIndex ? "scale(1.2)" : "scale(1)",
+            boxShadow: i === currentNoteIndex ? "0 0 10px rgba(0,0,0,0.5)" : "none",
+            transition: "all 0.3s ease"
+          }}
+        >
+            {item.label}
           </div>
         ))}
       </div>
@@ -131,21 +143,21 @@ const MITTherapy = () => {
 const singWithVibration = async () => {
   const synth = new Tone.Synth().toDestination();
   await Tone.start();
-  const notes = ["C4", "G3", "C4", "G3"];
-  const rhythm = [400, 200, 400, 200]; // milliseconds per note
 
-  notes.forEach((note, i) => {
+  melodyNotes.forEach((item, i) => {
     setTimeout(() => {
-      synth.triggerAttackRelease(note, "8n");
-
-      // Vibrate for that note if supported
+      setCurrentNoteIndex(i); // 🔥 trigger visual highlight
+      synth.triggerAttackRelease(item.note, "8n");
       if (navigator.vibrate) {
-        navigator.vibrate(rhythm[i]);
+        navigator.vibrate(item.duration);
       }
-
-    }, i * 600); // add some spacing between notes
+    }, i * 600);
   });
+
+  // Reset the highlight after the melody finishes
+  setTimeout(() => setCurrentNoteIndex(-1), melodyNotes.length * 600);
 };
+
 
 
 export default MITTherapy;
