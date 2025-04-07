@@ -33,7 +33,24 @@ const MITTherapy = () => {
     // Reset after last note
     setTimeout(() => setCurrentNoteIndex(-1), melodyNotes.length * 600);
   };
+// 🎤 Sing with vibration
+const singWithVibration = async () => {
+  const synth = new Tone.Synth().toDestination();
+  await Tone.start();
 
+  melodyNotes.forEach((item, i) => {
+    setTimeout(() => {
+      setCurrentNoteIndex(i); // 🔥 trigger visual highlight
+      synth.triggerAttackRelease(item.note, "8n");
+      if (navigator.vibrate) {
+        navigator.vibrate(item.duration);
+      }
+    }, i * 600);
+  });
+
+  // Reset the highlight after the melody finishes
+  setTimeout(() => setCurrentNoteIndex(-1), melodyNotes.length * 600);
+};
   // 🎤 Request microphone permission
   const requestMicrophoneAccess = async () => {
     try {
@@ -151,25 +168,4 @@ const MITTherapy = () => {
     </div>
   );
 };
-// 🎤 Sing with vibration
-const singWithVibration = async () => {
-  const synth = new Tone.Synth().toDestination();
-  await Tone.start();
-
-  melodyNotes.forEach((item, i) => {
-    setTimeout(() => {
-      setCurrentNoteIndex(i); // 🔥 trigger visual highlight
-      synth.triggerAttackRelease(item.note, "8n");
-      if (navigator.vibrate) {
-        navigator.vibrate(item.duration);
-      }
-    }, i * 600);
-  });
-
-  // Reset the highlight after the melody finishes
-  setTimeout(() => setCurrentNoteIndex(-1), melodyNotes.length * 600);
-};
-
-
-
 export default MITTherapy;
