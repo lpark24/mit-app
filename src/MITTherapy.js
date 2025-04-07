@@ -48,7 +48,7 @@ const singWithVibration = async () => {
     setTimeout(() => {
       const utterance = new SpeechSynthesisUtterance(syllable.text);
       utterance.pitch = syllable.pitch;
-      utterance.rate = 0.9;
+      utterance.rate = 0.5;
       utterance.lang = "en-US";
 
       window.speechSynthesis.speak(utterance);
