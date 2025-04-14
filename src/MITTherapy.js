@@ -10,6 +10,7 @@ const melodyNotes = [
 
 
 const MITTherapy = () => {
+  const [isFemaleVoice, setIsFemaleVoice] = useState(true);
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [background, setBackground] = useState("white");
@@ -36,11 +37,11 @@ const MITTherapy = () => {
 // 🎤 Sing with vibration
 const singWithVibration = async () => {
   const syllables = [
-    { text: "What's", pitch: 1.8, duration: 700, rate: 0.7 },
-    { text: "for", pitch: 0.6, duration: 700, rate: 0.7 },
-    { text: "din", pitch: 1.8, duration: 700, rate: 0.7 },
-    { text: "ner", pitch: 0.6, duration: 700, rate: 0.7 },
-  ];  
+    { text: "What's", pitch: isFemaleVoice ? 1.3 : 1.0, duration: 700 },
+    { text: "for",    pitch: isFemaleVoice ? 1.1 : 0.85, duration: 600 },
+    { text: "din",    pitch: isFemaleVoice ? 1.3 : 1.0, duration: 700 },
+    { text: "ner",    pitch: isFemaleVoice ? 1.1 : 0.85, duration: 600 }
+  ];
 
   let totalTime = 0;
 
@@ -48,19 +49,16 @@ const singWithVibration = async () => {
     setTimeout(() => {
       const utterance = new SpeechSynthesisUtterance(syllable.text);
       utterance.pitch = syllable.pitch;
-      utterance.rate = syllable.rate;
+      utterance.rate = 0.9;
       utterance.lang = "en-US";
-
       window.speechSynthesis.speak(utterance);
       setCurrentNoteIndex(i);
-
       if (navigator.vibrate) navigator.vibrate(200);
     }, totalTime);
 
     totalTime += syllable.duration;
   });
 
-  // Reset highlight
   setTimeout(() => setCurrentNoteIndex(-1), totalTime);
 };
 
@@ -164,16 +162,19 @@ const singWithVibration = async () => {
 
       {/* Buttons */}
       {!permissionGranted ? (
-        <button onClick={requestMicrophoneAccess}>🎬 Start Therapy</button>
-      ) : (
-        <>
-          <button onClick={playMelody}>🎵 Play Melody</button>
-          <button onClick={singWithVibration}>🎶 Sing with Vibration</button>
-          <button onClick={startListening} disabled={isListening}>
-            🎤 {isListening ? "Listening..." : "Start Speaking"}
-          </button>
-        </>
-      )}
+  <button onClick={requestMicrophoneAccess}>🎬 Start Therapy</button>
+) : (
+  <>
+    <button onClick={playMelody}>🎵 Play Melody</button>
+    <button onClick={singWithVibration}>🎶 Sing with Vibration</button>
+    <button onClick={startListening} disabled={isListening}>
+      🎤 {isListening ? "Listening..." : "Start Speaking"}
+    </button>
+    <button onClick={() => setIsFemaleVoice(!isFemaleVoice)}>
+      🎤 Voice: {isFemaleVoice ? "Female" : "Male"}
+    </button>
+  </>
+)}
 {errorMessage && (
   <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>
 )}
